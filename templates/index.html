@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ephemera Emotion Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
+
+
+</head>
+<body>
+    <header>
+        <h1>Ephemera Emotion Detection</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>Upload Images</h2>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input type="file" id="fileInput" name="file" accept="image/*" multiple>
+                <input type="file" id="videoInput" accept="video/*">
+                <label for="fileInput" class="custom-file-upload">Choose Images</label>
+                <button type="submit">Analyze</button>
+            </form>
+            <button id="exportButton" style="display: none;">Export Results</button>
+
+
+        </section>
+
+        <section id="imageContainer"></section>
+       
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Ephemera Emotion Detection</p>
+    </footer>
+
+    <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
