@@ -27,7 +27,8 @@ function processVideo(video, imageContainer, form) {
                 canvas.height = video.videoHeight;
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 canvas.toBlob(function(blob) {
-                    const file = new File([blob], `frame_${currentTime}.jpg`, { type: 'image/jpeg' });
+                    const filename = `frame_${currentTime.toFixed(2)}.jpg`;
+                    const file = new File([blob], filename, { type: 'image/jpeg' });
                     addImageToContainer(file, imageContainer);
                 }, 'image/jpeg');
                 currentTime += interval / 1000;
@@ -43,11 +44,10 @@ function processVideo(video, imageContainer, form) {
 }
 
 function addImageToContainer(file, imageContainer) {
-    // This function should create an image container similar to your existing code
-    // You may need to modify this based on your exact implementation
     const container = document.createElement('div');
     container.className = 'image-result-container';
     container.file = file;
+    container.originalFilename = file.name; // Store the original filename
 
     const imagePreview = document.createElement('div');
     imagePreview.className = 'image-preview';
@@ -60,7 +60,7 @@ function addImageToContainer(file, imageContainer) {
 
     const imageName = document.createElement('div');
     imageName.className = 'image-name';
-    imageName.textContent = file.name;
+    imageName.textContent = file.name; // Display the original filename
     imagePreview.appendChild(imageName);
 
     const resultDetails = document.createElement('div');

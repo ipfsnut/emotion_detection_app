@@ -16,32 +16,37 @@ export function initializeFormSubmission(form, imageContainer, exportButton, com
 
         for (let container of containers) {
             const file = container.file;
-            console.log(`Processing file: ${file.name}`);
+            const originalFilename = container.originalFilename || file.name; // Get the original filename
+            console.log(`Processing file: ${originalFilename}`);
             const resultDetails = container.querySelector('.result-details');
 
             const formData = new FormData();
             formData.append('file', file);
 
             try {
-                console.log(`Sending request for ${file.name}`);
+                console.log(`Sending request for ${originalFilename}`);
                 const response = await fetch('/upload', {
                     method: 'POST',
                     body: formData
                 });
 
-                console.log(`Received response for ${file.name}`);
+                console.log(`Received response for ${originalFilename}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
-                console.log(`Parsed data for ${file.name}:`, data);
+                console.log(`Parsed data for ${originalFilename}:`, data);
                 const transformedData = transformEmotionData(data);
-                displayResult(resultDetails, transformedData, container.imageNumber, file.name);
-                allResults.push({filename: file.name, imageNumber: container.imageNumber, result: transformedData});
-                console.log(`Processed ${file.name} successfully`);
+                displayResult(resultDetails, transformedData, container.imageNumber, originalFilename);
+                allResults.push({
+                    filename: originalFilename, // Use the original filename
+                    imageNumber: container.imageNumber, 
+                    result: transformedData
+                });
+                console.log(`Processed ${originalFilename} successfully`);
             } catch (error) {
-                console.error(`Error processing ${file.name}:`, error);
+                console.error(`Error processing ${originalFilename}:`, error);
             }
         }
 

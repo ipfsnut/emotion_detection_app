@@ -8,6 +8,7 @@ export function createImageResultContainer(file, imageNumber) {
     container.className = 'image-result-container';
     container.file = file;
     container.imageNumber = imageNumber;
+    container.originalFilename = file.name; // Store the original filename explicitly
 
     const imagePreview = document.createElement('div');
     imagePreview.className = 'image-preview';
@@ -33,9 +34,9 @@ export function createImageResultContainer(file, imageNumber) {
     return container;
 }
 // Function to display the analysis results for an image
-export function displayResult(resultDetails, data, imageNumber) {
+export function displayResult(resultDetails, data, imageNumber, filename) {
     // Start building the HTML for the results
-    let resultHtml = `<h3>Analysis Results: Image #${imageNumber} </h3>`;
+    let resultHtml = `<h3>Analysis Results: Image #${imageNumber} - ${filename}</h3>`;
     
     if (data.error) {
         // If there's an error, display it
