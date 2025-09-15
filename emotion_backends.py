@@ -226,7 +226,7 @@ def get_detector(backend_name):
 
 def get_available_backends():
     """Return list of available backend names"""
-    available = ['fer']  # FER (mock) is always available
+    available = ['fer']  # FER is always available
     
     # Check if DeepFace is available
     try:

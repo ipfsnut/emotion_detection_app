@@ -4,8 +4,6 @@ from emotion_backends import get_detector, get_available_backends
 from scipy.stats import pearsonr
 import numpy as np
 
-# Mock detector for backward compatibility
-detector = None
 
 def analyze_image(image_path):
     """Legacy single-backend function for backward compatibility"""
