@@ -20,17 +20,73 @@
         <section>
             <h2>Upload Images</h2>
             <form id="uploadForm" enctype="multipart/form-data">
-                <input type="file" id="fileInput" name="file" accept="image/*" multiple>
-                <input type="file" id="videoInput" accept="video/*">
-                <label for="fileInput" class="custom-file-upload">Choose Images</label>
-                <button type="submit">Analyze</button>
+                <div class="file-upload-section">
+                    <input type="file" id="fileInput" name="file" accept="image/*" multiple>
+                    <input type="file" id="videoInput" accept="video/*">
+                    <label for="fileInput" class="custom-file-upload">Choose Images</label>
+                </div>
+                
+                <div class="backend-selection-section">
+                    <h3>Emotion Detection Backends</h3>
+                    <div class="backend-options">
+                        {% if available_backends %}
+                            {% for backend in available_backends %}
+                            <label class="backend-checkbox">
+                                <input type="checkbox" name="backends" value="{{ backend }}" 
+                                       {% if loop.first or backend == 'fer' %}checked{% endif %}>
+                                <span class="backend-name">{{ backend.upper() }}</span>
+                                <span class="backend-description">
+                                    {% if backend == 'fer' %}
+                                        Original FER library
+                                    {% elif backend == 'deepface' %}
+                                        Facebook DeepFace
+                                    {% else %}
+                                        {{ backend }} detector
+                                    {% endif %}
+                                </span>
+                            </label>
+                            {% endfor %}
+                        {% else %}
+                            <label class="backend-checkbox">
+                                <input type="checkbox" name="backends" value="fer" checked>
+                                <span class="backend-name">FER</span>
+                                <span class="backend-description">Default emotion detector</span>
+                            </label>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="analysis-mode-section">
+                        <label class="mode-radio">
+                            <input type="radio" name="analysis_mode" value="multi" checked>
+                            <span>Compare Results</span> - Show side-by-side comparison
+                        </label>
+                        <label class="mode-radio">
+                            <input type="radio" name="analysis_mode" value="single">
+                            <span>Single Backend</span> - Use first selected backend only
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="analyze-button">Analyze Emotions</button>
             </form>
             <button id="exportButton" style="display: none;">Export Results</button>
-
 
         </section>
 
         <section id="imageContainer"></section>
+        
+        <!-- Comparison section for multi-backend analysis -->
+        <section id="comparisonSection" style="display: none;">
+            <h2>🔍 Multi-Backend Comparison</h2>
+            <div class="comparison-container">
+                <canvas id="comparisonGraph" width="400" height="200"></canvas>
+            </div>
+            <div id="comparisonStats" class="comparison-stats">
+                <h3>📊 Comparison Statistics</h3>
+                <div id="agreementInfo"></div>
+                <div id="correlationInfo"></div>
+            </div>
+        </section>
        
     </main>
 

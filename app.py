@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 import os
 import traceback
-from image_processor import analyze_image
+from image_processor import analyze_image, analyze_image_multi
+from emotion_backends import get_available_backends
 
 app = Flask(__name__)
 
@@ -11,7 +12,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Pass available backends to the template
+    available_backends = get_available_backends()
+    return render_template('index.html', available_backends=available_backends)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -25,16 +28,52 @@ def upload_file():
             filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(filename)
             
-            result = analyze_image(filename)
+            # Get selected backends from form data
+            backends = request.form.getlist('backends')
+            if not backends:
+                # Default to all available backends if none specified
+                backends = get_available_backends()
             
-            os.remove(filename)
-            return jsonify(result)
+            # Determine analysis mode
+            analysis_mode = request.form.get('analysis_mode', 'multi')
+            
+            try:
+                if analysis_mode == 'single' or len(backends) == 1:
+                    # Use single-backend analysis for backward compatibility
+                    result = analyze_image(filename)
+                    result['analysis_mode'] = 'single'
+                    result['backend_used'] = backends[0] if backends else 'fer'
+                else:
+                    # Use multi-backend analysis
+                    result = analyze_image_multi(filename, backends)
+                    result['analysis_mode'] = 'multi'
+                    
+                    # Multi-backend analysis completed
+                
+                return jsonify(result)
+            finally:
+                # Always clean up uploaded file
+                if os.path.exists(filename):
+                    os.remove(filename)
         else:
             return jsonify({'error': 'Invalid file type'}), 400
     except Exception as e:
         app.logger.error(f"An error occurred: {str(e)}")
         app.logger.error(traceback.format_exc())
         return jsonify({'error': 'An internal server error occurred'}), 500
+
+@app.route('/api/backends', methods=['GET'])
+def get_backends():
+    """API endpoint to get available backends"""
+    try:
+        available = get_available_backends()
+        return jsonify({
+            'available_backends': available,
+            'default_backends': available  # Use all available by default
+        })
+    except Exception as e:
+        app.logger.error(f"Error getting backends: {str(e)}")
+        return jsonify({'error': 'Could not get available backends'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

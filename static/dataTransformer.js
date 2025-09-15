@@ -1,29 +1,12 @@
 const emotionOrder = ['anger', 'disgust', 'fear', 'sadness', 'neutral', 'surprise', 'happiness'];
 
 export function transformEmotionData(data) {
-    const newEmotions = {};
-    const oldToNew = {
-        'angry': 'anger',
-        'disgust': 'disgust',
-        'fear': 'fear',
-        'sad': 'sadness',
-        'neutral': 'neutral',
-        'surprise': 'surprise',
-        'happy': 'happiness'
-    };
-
-    for (const [oldEmotion, newEmotion] of Object.entries(oldToNew)) {
-        if (data.emotions.hasOwnProperty(oldEmotion)) {
-            newEmotions[newEmotion] = data.emotions[oldEmotion];
-        }
-    }
-
-    return {
-        ...data,
-        emotions: newEmotions,
-        dominant_emotion: oldToNew[data.dominant_emotion] || data.dominant_emotion
-    };
+    // Since we fixed the backend emotion mapping, no transformation needed
+    // Just return the data as-is - backends already return correct emotion names
+    return data;
 }
+
+// Function removed - no longer needed since backends return correct emotion names
 
 export function getEmotionOrder() {
     return emotionOrder;
