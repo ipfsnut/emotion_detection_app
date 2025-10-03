@@ -2,6 +2,7 @@ import { initializeFileHandler } from './fileHandler.js';
 import { initializeFormSubmission } from './formSubmission.js';
 import { initializeExportButton } from './exportData.js';
 import { initializeVideoProcessor } from './videoProcessor.js';
+import viewManager from './viewManager.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('uploadForm');
@@ -16,4 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFileHandler(fileInput, imageContainer);
     initializeFormSubmission(form, imageContainer, exportButton, comparisonSection, comparisonGraph);
     initializeExportButton(exportButton);
+    
+    // Export viewManager to global scope for use in other modules
+    window.viewManager = viewManager;
 });

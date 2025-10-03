@@ -44,7 +44,7 @@ nav ul li a:hover {
 
 /* Main content styles */
 main {
-    max-width: 800px;
+    max-width: 1400px;
     margin: 2rem auto;
     padding: 1rem;
 }
@@ -187,17 +187,18 @@ button:hover {
 #imageContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
     justify-content: flex-start;
+    padding: 10px;
 }
 
 .image-result-container {
-    flex: 0 0 calc(33.333% - 15px);
-    max-width: 300px;
+    flex: 0 0 calc(50% - 15px);
+    min-width: 400px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
 }
 .image-preview {
     position: relative;
@@ -205,8 +206,9 @@ button:hover {
 
 .image-preview img {
     width: 100%;
-    height: 150px;
-    object-fit: cover;
+    height: 200px;
+    object-fit: contain;
+    background-color: #1a1a1a;
 }
 
 .image-name {
@@ -214,22 +216,27 @@ button:hover {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
     color: white;
-    font-size: 0.8em;
-    padding: 5px;
+    font-size: 0.75em;
+    padding: 8px;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+    white-space: normal;
+    overflow: visible;
+    word-wrap: break-word;
 }
 
 .result-details {
-    padding: 5px;
-    font-size: 0.9em;
+    padding: 15px;
+    font-size: 0.85em;
+    overflow: visible;
+    min-height: 300px;
 }
 .result-details h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+    word-wrap: break-word;
+    line-height: 1.3;
 }
 
 .result-details ul {
@@ -263,13 +270,16 @@ footer {
 .emotion-bar {
     display: flex;
     align-items: center;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.4rem;
+    padding: 2px 0;
 }
 
 .emotion-label {
-    width: 60px;
+    width: 80px;
     text-align: right;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    padding-right: 8px;
+    flex-shrink: 0;
 }
 
 .emotion-score {
@@ -277,19 +287,21 @@ footer {
     background-color: #333333;
     border-radius: 3px;
     overflow: hidden;
+    margin: 0 8px;
 }
 
 .emotion-score-fill {
-    height: 15px;
+    height: 18px;
     background-color: #0072ff;
     transition: width 0.5s ease-in-out;
 }
 
 .emotion-percentage {
-    width: 40px;
+    width: 50px;
     text-align: right;
-    padding-left: 10px;
-    font-size: 0.8rem;
+    padding-left: 8px;
+    font-size: 0.75rem;
+    flex-shrink: 0;
 }
 
 .dominant-emotion {
@@ -534,8 +546,8 @@ footer {
 
 /* Multi-Backend Comparison Styles */
 .backend-comparison-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 1.5rem;
     margin-top: 1rem;
 }
@@ -543,9 +555,11 @@ footer {
 .backend-result-card {
     background-color: #2a2a2a;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 1.2rem;
     border: 2px solid #444;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex: 1 1 45%;
+    min-width: 350px;
 }
 
 .backend-result-card:hover {
@@ -590,22 +604,26 @@ footer {
 
 .emotion-graph-card {
     background-color: #1a1a1a;
-    padding: 0.8rem;
+    padding: 1rem;
     border-radius: 6px;
+    overflow: visible;
+    min-height: auto;
 }
 
 .emotion-bar-small {
     display: flex;
     align-items: center;
-    margin-bottom: 0.3rem;
-    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    padding: 2px 0;
 }
 
 .emotion-label-small {
-    width: 50px;
+    width: 70px;
     text-align: right;
     font-size: 0.7rem;
     margin-right: 0.5rem;
+    flex-shrink: 0;
 }
 
 .emotion-score-small {
@@ -613,7 +631,8 @@ footer {
     background-color: #333333;
     border-radius: 3px;
     overflow: hidden;
-    height: 12px;
+    height: 14px;
+    margin: 0 5px;
 }
 
 .emotion-score-fill-small {
@@ -623,10 +642,11 @@ footer {
 }
 
 .emotion-percentage-small {
-    width: 35px;
+    width: 45px;
     text-align: right;
     padding-left: 0.5rem;
     font-size: 0.7rem;
+    flex-shrink: 0;
 }
 
 .error-message {
@@ -644,6 +664,7 @@ footer {
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     border: 1px solid #444;
+    overflow: visible;
 }
 
 .comparison-summary h4 {
@@ -752,7 +773,17 @@ footer {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .backend-comparison-grid {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+    
+    .backend-result-card {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+    
+    .image-result-container {
+        flex: 1 1 100%;
+        min-width: 100%;
     }
     
     .backend-options {
@@ -774,5 +805,15 @@ footer {
     #comparisonGraph {
         width: 100%;
         height: 250px;
+    }
+    
+    .emotion-label,
+    .emotion-label-small {
+        font-size: 0.65rem;
+    }
+    
+    .emotion-percentage,
+    .emotion-percentage-small {
+        font-size: 0.65rem;
     }
 }

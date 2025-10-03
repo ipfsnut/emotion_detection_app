@@ -6,6 +6,7 @@
     <title>Ephemera Emotion Detection</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_extension.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
 
@@ -73,18 +74,35 @@
 
         </section>
 
-        <section id="imageContainer"></section>
+        <!-- View Controls -->
+        <section id="viewControls" style="display: none;">
+            <div class="view-controls">
+                <button class="view-btn active" data-view="grid">Grid View</button>
+                <button class="view-btn" data-view="list">List View</button>
+                <button class="view-btn" data-view="compact">Compact View</button>
+            </div>
+        </section>
+
+        <section id="imageContainer" class="grid-view"></section>
         
         <!-- Comparison section for multi-backend analysis -->
         <section id="comparisonSection" style="display: none;">
-            <h2>🔍 Multi-Backend Comparison</h2>
+            <h2>Multi-Backend Comparison</h2>
             <div class="comparison-container">
                 <canvas id="comparisonGraph" width="400" height="200"></canvas>
             </div>
             <div id="comparisonStats" class="comparison-stats">
-                <h3>📊 Comparison Statistics</h3>
+                <h3>Comparison Statistics</h3>
                 <div id="agreementInfo"></div>
                 <div id="correlationInfo"></div>
+            </div>
+        </section>
+        
+        <!-- Summary Analysis Section -->
+        <section id="summaryAnalysis" style="display: none;">
+            <h2>Summary Analysis</h2>
+            <div class="summary-stats">
+                <canvas id="averageEmotionsChart"></canvas>
             </div>
         </section>
        
