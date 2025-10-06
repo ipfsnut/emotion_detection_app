@@ -27,6 +27,26 @@
                     <label for="fileInput" class="custom-file-upload">Choose Images</label>
                 </div>
                 
+                <!-- Baseline Calibration Section -->
+                <div class="baseline-section">
+                    <h3>🎯 Baseline Calibration</h3>
+                    <div class="baseline-controls">
+                        <button type="button" id="setBaselineBtn" class="baseline-btn">
+                            📸 Set Neutral Baseline
+                        </button>
+                        <button type="button" id="clearBaselineBtn" class="baseline-btn danger" style="display: none;">
+                            ❌ Clear Baseline
+                        </button>
+                        <div id="baselineStatus" class="baseline-status">
+                            <span class="status-text">No baseline set</span>
+                        </div>
+                        <label class="baseline-checkbox" style="display: none;">
+                            <input type="checkbox" id="useBaseline" name="use_baseline" value="true">
+                            <span>Compare to baseline</span>
+                        </label>
+                    </div>
+                </div>
+                
                 <div class="backend-selection-section">
                     <h3>Emotion Detection Backends</h3>
                     <div class="backend-options">

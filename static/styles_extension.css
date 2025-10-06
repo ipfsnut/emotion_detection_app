@@ -808,3 +808,361 @@
     color: #000;
     font-weight: bold;
 }
+
+/* Baseline Calibration Styles */
+.baseline-section {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(255, 140, 0, 0.05));
+    border: 1px solid #ffd700;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.baseline-section h3 {
+    color: #ffd700;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.baseline-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.baseline-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #ffd700, #ffa500);
+    color: #000;
+    font-weight: bold;
+}
+
+.baseline-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+}
+
+.baseline-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.baseline-btn.danger {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    color: #fff;
+}
+
+.baseline-status {
+    flex: 1;
+    padding: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    min-width: 200px;
+}
+
+.status-text {
+    color: #999;
+}
+
+.status-active {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.baseline-details {
+    color: #888;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}
+
+.baseline-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 215, 0, 0.1);
+    border-radius: 4px;
+}
+
+.baseline-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+/* Baseline Result Preview */
+.baseline-result-preview {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 140, 0, 0.1));
+    border: 2px solid #ffd700;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    transition: opacity 0.5s ease;
+}
+
+.baseline-result-preview h4 {
+    color: #ffd700;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.baseline-aus {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+}
+
+.baseline-au-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.baseline-au-item .au-code {
+    font-weight: bold;
+    color: #ffd700;
+    font-family: monospace;
+}
+
+.baseline-au-item .au-intensity {
+    color: #fff;
+    background-color: rgba(255, 215, 0, 0.3);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+}
+
+.baseline-au-item .au-desc {
+    color: #ccc;
+    font-size: 0.85rem;
+}
+
+/* Delta Analysis Styles */
+.delta-analysis {
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.05), rgba(75, 0, 130, 0.05));
+    border: 1px solid #8a2be2;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+.delta-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+}
+
+.delta-header h4 {
+    color: #8a2be2;
+    margin: 0 0 0.5rem 0;
+}
+
+.delta-meta {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.delta-meta strong {
+    color: #fff;
+    background-color: rgba(138, 43, 226, 0.3);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+}
+
+/* Significant Changes */
+.significant-changes {
+    margin: 1rem 0;
+}
+
+.significant-changes h5 {
+    color: #8a2be2;
+    margin-bottom: 0.75rem;
+}
+
+.delta-change-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    border-left: 3px solid transparent;
+}
+
+.delta-change-item.increase {
+    border-left-color: #4caf50;
+}
+
+.delta-change-item.decrease {
+    border-left-color: #f44336;
+}
+
+.delta-au {
+    font-weight: bold;
+    font-family: monospace;
+    color: #8a2be2;
+}
+
+.delta-arrow {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.delta-change-item.increase .delta-arrow {
+    color: #4caf50;
+}
+
+.delta-change-item.decrease .delta-arrow {
+    color: #f44336;
+}
+
+.delta-value {
+    font-weight: bold;
+    color: #fff;
+    background-color: rgba(138, 43, 226, 0.3);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+}
+
+.delta-desc {
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.delta-type {
+    color: #666;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* Movement Patterns */
+.movement-patterns {
+    margin: 1rem 0;
+}
+
+.movement-patterns h5 {
+    color: #8a2be2;
+    margin-bottom: 0.75rem;
+}
+
+.pattern-item {
+    background-color: rgba(138, 43, 226, 0.1);
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.pattern-item strong {
+    color: #8a2be2;
+}
+
+.pattern-intensity {
+    float: right;
+    background-color: rgba(138, 43, 226, 0.3);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+}
+
+.pattern-desc {
+    color: #999;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+/* Delta Grid */
+.all-deltas {
+    margin-top: 1rem;
+}
+
+.all-deltas h5 {
+    color: #8a2be2;
+    margin-bottom: 0.75rem;
+}
+
+.delta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.5rem;
+}
+
+.delta-grid-item {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.delta-grid-item.positive {
+    border-color: #4caf50;
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.delta-grid-item.negative {
+    border-color: #f44336;
+    background-color: rgba(244, 67, 54, 0.1);
+}
+
+.delta-grid-item.neutral {
+    border-color: #666;
+}
+
+.delta-au-code {
+    font-weight: bold;
+    color: #8a2be2;
+    font-family: monospace;
+    margin-bottom: 0.25rem;
+}
+
+.delta-values {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    color: #999;
+    margin: 0.25rem 0;
+}
+
+.delta-values .arrow {
+    color: #666;
+}
+
+.delta-diff {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.delta-grid-item.positive .delta-diff {
+    color: #4caf50;
+}
+
+.delta-grid-item.negative .delta-diff {
+    color: #f44336;
+}
+
+.delta-grid-item.neutral .delta-diff {
+    color: #999;
+}
+
+/* Backend card for delta results */
+.backend-result-card.simplefacs_delta {
+    border: 2px solid #8a2be2;
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.02), rgba(75, 0, 130, 0.02));
+}
+
+.backend-result-card.simplefacs_delta .backend-header {
+    background: linear-gradient(135deg, #8a2be2, #4b0082);
+    color: #fff;
+    font-weight: bold;
+}

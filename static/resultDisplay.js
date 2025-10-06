@@ -90,7 +90,7 @@ function displayMultiBackendResult(resultDetails, data, imageNumber, filename) {
     // Create backend comparison grid
     resultHtml += `<div class="backend-comparison-grid">`;
     
-    // Display results for each backend
+    // Display results for each backend (including delta results)
     const backends = Object.keys(data).filter(key => 
         !['comparison', 'meta', 'analysis_mode'].includes(key)
     );
@@ -177,10 +177,19 @@ function createBackendResultCard(backend, result) {
     let cardHtml = `<div class="backend-result-card ${backendClass}">`;
     
     // Backend header
+    let headerStatus = '';
+    if (result.analysis_type === 'baseline_delta') {
+        // Delta analysis shows baseline status instead of face detection
+        headerStatus = result.has_baseline ? '📊 Delta Analysis' : '❌ No Baseline';
+    } else {
+        // Regular analysis shows face detection
+        headerStatus = `${result.face_detected ? '👤' : '❌'} ${result.face_detected ? 'Face Detected' : 'No Face'}`;
+    }
+    
     cardHtml += `
         <div class="backend-header">
             <h4>${backend.toUpperCase()}</h4>
-            ${result.face_detected ? '👤' : '❌'} ${result.face_detected ? 'Face Detected' : 'No Face'}
+            ${headerStatus}
         </div>
     `;
     
@@ -189,6 +198,9 @@ function createBackendResultCard(backend, result) {
     } else if (result.analysis_type === 'pure_facs') {
         // Pure FACS analysis - show muscle data only
         cardHtml += createPureFACSDisplay(result);
+    } else if (result.analysis_type === 'baseline_delta') {
+        // Baseline delta analysis
+        cardHtml += createDeltaDisplay(result);
     } else if (result.emotions) {
         // Emotion backend - show emotions
         cardHtml += createEmotionDisplay(result);
@@ -301,6 +313,94 @@ function createPureFACSDisplay(result) {
     
     facsHtml += `</div>`;
     return facsHtml;
+}
+
+// Function to display baseline delta analysis
+function createDeltaDisplay(result) {
+    let deltaHtml = `<div class="delta-analysis">`;
+    
+    if (!result.has_baseline) {
+        deltaHtml += `<p class="no-baseline">No baseline set for comparison</p>`;
+    } else {
+        // Header
+        deltaHtml += `
+            <div class="delta-header">
+                <h4>📊 Delta Analysis from Baseline</h4>
+                <div class="delta-meta">
+                    Total Movement: <strong>${result.total_movement}</strong>
+                </div>
+            </div>
+        `;
+        
+        // Significant changes
+        if (result.significant_changes && result.significant_changes.length > 0) {
+            deltaHtml += `<div class="significant-changes">`;
+            deltaHtml += `<h5>🎯 Significant Changes</h5>`;
+            
+            for (const change of result.significant_changes) {
+                const deltaClass = change.delta > 0 ? 'increase' : 'decrease';
+                const arrow = change.delta > 0 ? '↑' : '↓';
+                
+                deltaHtml += `
+                    <div class="delta-change-item ${deltaClass}">
+                        <span class="delta-au">${change.au}</span>
+                        <span class="delta-arrow">${arrow}</span>
+                        <span class="delta-value">${(Math.abs(change.delta) * 100).toFixed(1)}%</span>
+                        <span class="delta-desc">${change.description}</span>
+                        <span class="delta-type">(${change.change_type})</span>
+                    </div>
+                `;
+            }
+            deltaHtml += `</div>`;
+        }
+        
+        // Movement patterns detected
+        if (result.movement_patterns && result.movement_patterns.length > 0) {
+            deltaHtml += `<div class="movement-patterns">`;
+            deltaHtml += `<h5>🎭 Movement Patterns</h5>`;
+            
+            for (const pattern of result.movement_patterns) {
+                deltaHtml += `
+                    <div class="pattern-item">
+                        <strong>${pattern.pattern}</strong>
+                        <span class="pattern-intensity">${(pattern.intensity * 100).toFixed(1)}%</span>
+                        <div class="pattern-desc">${pattern.description}</div>
+                    </div>
+                `;
+            }
+            deltaHtml += `</div>`;
+        }
+        
+        // All deltas grid
+        if (result.deltas) {
+            deltaHtml += `<div class="all-deltas">`;
+            deltaHtml += `<h5>📈 All AU Deltas</h5>`;
+            deltaHtml += `<div class="delta-grid">`;
+            
+            for (const [au, deltaData] of Object.entries(result.deltas)) {
+                const deltaClass = deltaData.delta > 0 ? 'positive' : deltaData.delta < 0 ? 'negative' : 'neutral';
+                const sign = deltaData.delta > 0 ? '+' : '';
+                
+                deltaHtml += `
+                    <div class="delta-grid-item ${deltaClass}">
+                        <div class="delta-au-code">${au}</div>
+                        <div class="delta-values">
+                            <span class="baseline-val">${(deltaData.baseline * 100).toFixed(0)}%</span>
+                            <span class="arrow">→</span>
+                            <span class="current-val">${(deltaData.current * 100).toFixed(0)}%</span>
+                        </div>
+                        <div class="delta-diff">${sign}${(deltaData.delta * 100).toFixed(1)}%</div>
+                    </div>
+                `;
+            }
+            
+            deltaHtml += `</div>`;
+            deltaHtml += `</div>`;
+        }
+    }
+    
+    deltaHtml += `</div>`;
+    return deltaHtml;
 }
 
 // Function to display FACS Action Units

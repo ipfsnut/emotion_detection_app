@@ -130,19 +130,44 @@ function createMultiBackendCSV(allResults) {
     const emotions = ['anger', 'disgust', 'fear', 'sadness', 'neutral', 'surprise', 'happiness'];
     const backends = [];
     
-    // Detect available backends
+    // Detect available backends and collect all unique AUs for delta exports
+    const allAUs = new Set();
     allResults.forEach(result => {
         if (result.result.fer && !backends.includes('fer')) backends.push('fer');
         if (result.result.deepface && !backends.includes('deepface')) backends.push('deepface');
+        if (result.result.simplefacs && !backends.includes('simplefacs')) backends.push('simplefacs');
+        if (result.result.simplefacs_delta && !backends.includes('simplefacs_delta')) {
+            backends.push('simplefacs_delta');
+            // Collect all AUs that appear in delta analyses
+            if (result.result.simplefacs_delta.deltas) {
+                Object.keys(result.result.simplefacs_delta.deltas).forEach(au => allAUs.add(au));
+            }
+        }
     });
+    
+    // Sort AUs for consistent column ordering
+    const sortedAUs = Array.from(allAUs).sort();
     
     // Build header
     let header = "Image Number,Filename";
     backends.forEach(backend => {
-        header += `,${backend.toUpperCase()}_Dominant`;
-        emotions.forEach(emotion => {
-            header += `,${backend.toUpperCase()}_${emotion}`;
-        });
+        if (backend === 'simplefacs') {
+            // FACS headers
+            header += `,${backend.toUpperCase()}_Total_AUs,${backend.toUpperCase()}_Primary_AUs,${backend.toUpperCase()}_Face_Detected`;
+        } else if (backend === 'simplefacs_delta') {
+            // Delta headers - summary first
+            header += `,${backend.toUpperCase()}_Has_Baseline,${backend.toUpperCase()}_Total_Movement,${backend.toUpperCase()}_Significant_Changes,${backend.toUpperCase()}_Movement_Patterns`;
+            // Then individual AU deltas
+            sortedAUs.forEach(au => {
+                header += `,${backend.toUpperCase()}_${au}_Delta,${backend.toUpperCase()}_${au}_Baseline,${backend.toUpperCase()}_${au}_Current`;
+            });
+        } else {
+            // Emotion backend headers
+            header += `,${backend.toUpperCase()}_Dominant`;
+            emotions.forEach(emotion => {
+                header += `,${backend.toUpperCase()}_${emotion}`;
+            });
+        }
     });
     if (backends.length > 1) {
         header += ",Agreement,Correlation";
@@ -155,15 +180,50 @@ function createMultiBackendCSV(allResults) {
         
         backends.forEach(backend => {
             const backendData = result.result[backend];
-            if (backendData) {
+            if (backend === 'simplefacs' && backendData) {
+                // FACS specific data
+                const totalAUs = backendData.total_aus_detected || 0;
+                const primaryAUs = backendData.primary_aus?.join(';') || 'None';
+                const faceDetected = backendData.face_detected ? 'Yes' : 'No';
+                row += `,${totalAUs},"${primaryAUs}",${faceDetected}`;
+            } else if (backend === 'simplefacs_delta' && backendData) {
+                // Delta analysis specific data - summary first
+                const hasBaseline = backendData.has_baseline ? 'Yes' : 'No';
+                const totalMovement = backendData.total_movement || 0;
+                const sigChanges = backendData.significant_changes?.length || 0;
+                const patterns = backendData.movement_patterns?.map(p => p.pattern).join(';') || 'None';
+                row += `,${hasBaseline},${totalMovement},${sigChanges},"${patterns}"`;
+                
+                // Then individual AU deltas
+                sortedAUs.forEach(au => {
+                    if (backendData.deltas && backendData.deltas[au]) {
+                        const auData = backendData.deltas[au];
+                        row += `,${auData.delta},${auData.baseline},${auData.current}`;
+                    } else {
+                        row += `,N/A,N/A,N/A`;
+                    }
+                });
+            } else if (backendData && backendData.emotions) {
+                // Emotion backend data
                 row += `,${backendData.dominant_emotion || 'N/A'}`;
                 emotions.forEach(emotion => {
-                    const value = backendData.emotions?.[emotion] || 0;
+                    const value = backendData.emotions[emotion] || 0;
                     row += `,${value.toFixed(4)}`;
                 });
             } else {
-                row += `,N/A`;
-                emotions.forEach(() => row += `,N/A`);
+                // Missing data - add appropriate number of N/A columns
+                if (backend === 'simplefacs') {
+                    row += `,N/A,N/A,N/A`;
+                } else if (backend === 'simplefacs_delta') {
+                    row += `,N/A,N/A,N/A,N/A`;
+                    // Add N/A for all AU delta columns
+                    sortedAUs.forEach(() => {
+                        row += `,N/A,N/A,N/A`;
+                    });
+                } else {
+                    row += `,N/A`;
+                    emotions.forEach(() => row += `,N/A`);
+                }
             }
         });
         
@@ -207,7 +267,15 @@ function createStructuredJSON(allResults) {
         images: [],
         summary: {
             average_emotions: {},
-            dominant_emotions_distribution: {}
+            dominant_emotions_distribution: {},
+            facs_summary: {
+                total_analyses: 0,
+                average_au_count: 0,
+                most_common_aus: {},
+                baseline_analyses: 0,
+                average_movement: 0,
+                common_patterns: {}
+            }
         }
     };
     
@@ -215,6 +283,14 @@ function createStructuredJSON(allResults) {
     const emotions = ['anger', 'disgust', 'fear', 'sadness', 'neutral', 'surprise', 'happiness'];
     const emotionSums = {};
     const dominantCounts = {};
+    const facsSummary = {
+        totalAnalyses: 0,
+        totalAUCount: 0,
+        auCounts: {},
+        baselineAnalyses: 0,
+        totalMovement: 0,
+        patternCounts: {}
+    };
     
     emotions.forEach(e => {
         emotionSums[e] = 0;
@@ -251,6 +327,18 @@ function createStructuredJSON(allResults) {
                 structured.metadata.backends_used.push('deepface');
             }
         }
+        if (result.result.simplefacs) {
+            imageData.results.simplefacs = result.result.simplefacs;
+            if (!structured.metadata.backends_used.includes('simplefacs')) {
+                structured.metadata.backends_used.push('simplefacs');
+            }
+        }
+        if (result.result.simplefacs_delta) {
+            imageData.results.simplefacs_delta = result.result.simplefacs_delta;
+            if (!structured.metadata.backends_used.includes('simplefacs_delta')) {
+                structured.metadata.backends_used.push('simplefacs_delta');
+            }
+        }
         
         // Add comparison if available
         if (result.result.comparison) {
@@ -269,6 +357,37 @@ function createStructuredJSON(allResults) {
                 (dominantCounts[primaryBackend.dominant_emotion] || 0) + 1;
         }
         
+        // Calculate FACS statistics
+        if (result.result.simplefacs) {
+            facsSummary.totalAnalyses++;
+            const facsData = result.result.simplefacs;
+            if (facsData.total_aus_detected) {
+                facsSummary.totalAUCount += facsData.total_aus_detected;
+            }
+            if (facsData.action_units) {
+                Object.keys(facsData.action_units).forEach(au => {
+                    facsSummary.auCounts[au] = (facsSummary.auCounts[au] || 0) + 1;
+                });
+            }
+        }
+        
+        if (result.result.simplefacs_delta) {
+            const deltaData = result.result.simplefacs_delta;
+            if (deltaData.has_baseline) {
+                facsSummary.baselineAnalyses++;
+                if (deltaData.total_movement) {
+                    facsSummary.totalMovement += deltaData.total_movement;
+                }
+                if (deltaData.movement_patterns) {
+                    deltaData.movement_patterns.forEach(pattern => {
+                        const patternName = pattern.pattern;
+                        facsSummary.patternCounts[patternName] = 
+                            (facsSummary.patternCounts[patternName] || 0) + 1;
+                    });
+                }
+            }
+        }
+        
         structured.images.push(imageData);
     });
     
@@ -278,6 +397,21 @@ function createStructuredJSON(allResults) {
             (emotionSums[emotion] / allResults.length).toFixed(4);
     });
     structured.summary.dominant_emotions_distribution = dominantCounts;
+    
+    // Calculate FACS summary
+    if (facsSummary.totalAnalyses > 0) {
+        structured.summary.facs_summary.total_analyses = facsSummary.totalAnalyses;
+        structured.summary.facs_summary.average_au_count = 
+            (facsSummary.totalAUCount / facsSummary.totalAnalyses).toFixed(2);
+        structured.summary.facs_summary.most_common_aus = facsSummary.auCounts;
+        structured.summary.facs_summary.baseline_analyses = facsSummary.baselineAnalyses;
+        
+        if (facsSummary.baselineAnalyses > 0) {
+            structured.summary.facs_summary.average_movement = 
+                (facsSummary.totalMovement / facsSummary.baselineAnalyses).toFixed(2);
+        }
+        structured.summary.facs_summary.common_patterns = facsSummary.patternCounts;
+    }
     
     return structured;
 }

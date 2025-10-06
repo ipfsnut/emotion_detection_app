@@ -35,6 +35,14 @@ export function initializeFormSubmission(form, imageContainer, exportButton, com
             const analysisMode = form.querySelector('input[name="analysis_mode"]:checked')?.value || 'multi';
             formData.append('analysis_mode', analysisMode);
             
+            // Add baseline parameters if available
+            if (window.baselineManager && window.baselineManager.shouldUseBaseline()) {
+                formData.append('use_baseline', 'true');
+                console.log('Using baseline comparison');
+            } else {
+                formData.append('use_baseline', 'false');
+            }
+            
             console.log('Selected backends:', selectedBackends);
             console.log('Analysis mode:', analysisMode);
 

@@ -1,0 +1,33 @@
+{
+  "person_id": "default",
+  "timestamp": "2025-10-06T14:29:21.196090",
+  "action_units": {
+    "AU12": {
+      "intensity": 0.422,
+      "description": "Lip Corner Puller",
+      "muscle_group": "zygomaticus major",
+      "detection_method": "OpenCV approximation"
+    },
+    "AU01": {
+      "intensity": 0.631,
+      "description": "Inner Brow Raiser",
+      "muscle_group": "corrugator supercilii (medial)",
+      "detection_method": "OpenCV approximation"
+    },
+    "AU05": {
+      "intensity": 0.6,
+      "description": "Upper Lid Raiser",
+      "muscle_group": "levator palpebrae superioris",
+      "detection_method": "OpenCV approximation"
+    },
+    "AU26": {
+      "intensity": 1.0,
+      "description": "Jaw Drop",
+      "muscle_group": "masseter (relaxed)",
+      "detection_method": "OpenCV approximation"
+    }
+  },
+  "total_aus_detected": 4,
+  "analyzer": "SimpleFACS",
+  "note": "Baseline set for default"
+}

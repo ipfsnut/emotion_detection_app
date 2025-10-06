@@ -3,6 +3,7 @@ import { initializeFormSubmission } from './formSubmission.js';
 import { initializeExportButton } from './exportData.js';
 import { initializeVideoProcessor } from './videoProcessor.js';
 import viewManager from './viewManager.js';
+import { baselineManager } from './baselineManager.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('uploadForm');
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFormSubmission(form, imageContainer, exportButton, comparisonSection, comparisonGraph);
     initializeExportButton(exportButton);
     
-    // Export viewManager to global scope for use in other modules
+    // Export viewManager and baselineManager to global scope for use in other modules
     window.viewManager = viewManager;
+    window.baselineManager = baselineManager;
 });
