@@ -45,13 +45,22 @@ def analyze_image_multi(image_path, backends=None):
     for backend_name in backends:
         try:
             detector_instance = get_detector(backend_name)
-            result = detector_instance.detect(image_path)
+            
+            # Check if this is a FACS analyzer (pure muscle data) or emotion detector
+            if hasattr(detector_instance, 'analyze'):
+                # FACS analyzer - returns pure muscle data
+                result = detector_instance.analyze(image_path)
+            else:
+                # Emotion detector - returns emotion predictions
+                result = detector_instance.detect(image_path)
+            
             results[backend_name] = result
             
             # Backend analysis completed
             
-            # Store successful results for comparison
-            if 'error' not in result and result.get('face_detected', False):
+            # Store successful results for comparison (only emotion backends)
+            if ('error' not in result and result.get('face_detected', False) and 
+                result.get('analysis_type') != 'pure_facs'):
                 successful_results[backend_name] = result
                 
         except Exception as e:

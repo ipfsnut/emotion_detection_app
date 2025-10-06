@@ -9,6 +9,7 @@ blinker==1.9.0
 
 # Emotion detection libraries
 fer==22.5.1
+deepface>=0.0.75
 
 # Scientific computing (Python 3.13 compatible)
 numpy>=1.26.0

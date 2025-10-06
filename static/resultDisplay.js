@@ -186,33 +186,165 @@ function createBackendResultCard(backend, result) {
     
     if (result.error) {
         cardHtml += `<p class="error-message">❌ ${result.error}</p>`;
+    } else if (result.analysis_type === 'pure_facs') {
+        // Pure FACS analysis - show muscle data only
+        cardHtml += createPureFACSDisplay(result);
     } else if (result.emotions) {
-        // Dominant emotion
-        cardHtml += `
-            <div class="dominant-emotion-card">
-                <strong>Dominant:</strong> ${result.dominant_emotion}
-                <span class="confidence-score">(${(result.confidence_score * 100).toFixed(1)}%)</span>
-            </div>
-        `;
+        // Emotion backend - show emotions
+        cardHtml += createEmotionDisplay(result);
         
-        // Emotion breakdown
-        cardHtml += `<div class="emotion-graph-card">`;
-        for (const emotion of emotionOrder) {
-            const score = result.emotions[emotion] || 0;
-            const percentage = (score * 100).toFixed(1);
-            cardHtml += `
-                <div class="emotion-bar-small">
-                    <span class="emotion-label-small">${emotion}</span>
-                    <div class="emotion-score-small">
-                        <div class="emotion-score-fill-small" style="width: ${percentage}%"></div>
-                    </div>
-                    <span class="emotion-percentage-small">${percentage}%</span>
-                </div>
-            `;
+        // Add FACS Action Units if present (legacy format)
+        if (result.action_units && typeof result.action_units === 'object' && !result.action_units.intensity) {
+            cardHtml += createActionUnitsDisplay(result.action_units, result.au_interpretation);
         }
-        cardHtml += `</div>`;
     }
     
     cardHtml += `</div>`;
     return cardHtml;
+}
+
+// Function to display emotion analysis results
+function createEmotionDisplay(result) {
+    let emotionHtml = '';
+    
+    // Dominant emotion
+    emotionHtml += `
+        <div class="dominant-emotion-card">
+            <strong>Dominant:</strong> ${result.dominant_emotion}
+            <span class="confidence-score">(${(result.confidence_score * 100).toFixed(1)}%)</span>
+        </div>
+    `;
+    
+    // Emotion breakdown
+    emotionHtml += `<div class="emotion-graph-card">`;
+    for (const emotion of emotionOrder) {
+        const score = result.emotions[emotion] || 0;
+        const percentage = (score * 100).toFixed(1);
+        emotionHtml += `
+            <div class="emotion-bar-small">
+                <span class="emotion-label-small">${emotion}</span>
+                <div class="emotion-score-small">
+                    <div class="emotion-score-fill-small" style="width: ${percentage}%"></div>
+                </div>
+                <span class="emotion-percentage-small">${percentage}%</span>
+            </div>
+        `;
+    }
+    emotionHtml += `</div>`;
+    
+    return emotionHtml;
+}
+
+// Function to display pure FACS analysis
+function createPureFACSDisplay(result) {
+    let facsHtml = `<div class="pure-facs-analysis">`;
+    
+    // Summary
+    facsHtml += `
+        <div class="facs-summary">
+            <strong>🔬 Muscle Analysis:</strong> ${result.total_aus_detected} Action Units detected
+        </div>
+    `;
+    
+    // Action Units
+    if (result.action_units && Object.keys(result.action_units).length > 0) {
+        facsHtml += `<div class="pure-facs-units">`;
+        facsHtml += `<h5>💪 Active Muscles</h5>`;
+        
+        // Sort by intensity
+        const sortedAUs = Object.entries(result.action_units)
+            .sort((a, b) => b[1].intensity - a[1].intensity);
+        
+        facsHtml += `<div class="facs-unit-list">`;
+        for (const [auCode, auData] of sortedAUs) {
+            const percentage = (auData.intensity * 100).toFixed(1);
+            const intensityClass = auData.intensity > 0.7 ? 'high' : auData.intensity > 0.4 ? 'medium' : 'low';
+            
+            facsHtml += `
+                <div class="facs-unit-item ${intensityClass}">
+                    <div class="facs-unit-header">
+                        <span class="facs-au-code">${auCode}</span>
+                        <span class="facs-intensity">${percentage}%</span>
+                    </div>
+                    <div class="facs-unit-description">${auData.description}</div>
+                    <div class="facs-muscle-group">${auData.muscle_group}</div>
+                    <div class="facs-intensity-bar">
+                        <div class="facs-intensity-fill" style="width: ${percentage}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+        facsHtml += `</div>`;
+        facsHtml += `</div>`;
+    }
+    
+    // FACS Combinations
+    if (result.facs_combinations && result.facs_combinations.length > 0) {
+        facsHtml += `<div class="facs-combinations">`;
+        facsHtml += `<h5>🎭 Detected Patterns</h5>`;
+        
+        for (const combo of result.facs_combinations) {
+            const percentage = (combo.intensity * 100).toFixed(1);
+            facsHtml += `
+                <div class="facs-combination">
+                    <div class="facs-combo-header">
+                        <strong>${combo.pattern}</strong>
+                        <span class="facs-combo-intensity">${percentage}%</span>
+                    </div>
+                    <div class="facs-combo-description">${combo.description}</div>
+                    <div class="facs-combo-aus">AUs: ${combo.aus.join(', ')}</div>
+                </div>
+            `;
+        }
+        facsHtml += `</div>`;
+    }
+    
+    facsHtml += `</div>`;
+    return facsHtml;
+}
+
+// Function to display FACS Action Units
+function createActionUnitsDisplay(actionUnits, interpretation) {
+    let auHtml = `<div class="action-units-section">`;
+    auHtml += `<h5>🎭 FACS Action Units</h5>`;
+    
+    // Display significant action units
+    const significantAUs = Object.entries(actionUnits)
+        .filter(([au, intensity]) => intensity > 0.1)
+        .sort((a, b) => b[1] - a[1]);
+    
+    if (significantAUs.length > 0) {
+        auHtml += `<div class="action-units-grid">`;
+        for (const [au, intensity] of significantAUs) {
+            const percentage = (intensity * 100).toFixed(1);
+            const intensityClass = intensity > 0.7 ? 'high' : intensity > 0.4 ? 'medium' : 'low';
+            auHtml += `
+                <div class="au-item ${intensityClass}">
+                    <span class="au-code">${au}</span>
+                    <div class="au-intensity">
+                        <div class="au-intensity-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <span class="au-value">${percentage}%</span>
+                </div>
+            `;
+        }
+        auHtml += `</div>`;
+        
+        // Add interpretation if available
+        if (interpretation && interpretation.length > 0) {
+            auHtml += `<div class="au-interpretation">`;
+            auHtml += `<h6>Active Facial Movements:</h6>`;
+            auHtml += `<ul class="au-list">`;
+            for (const desc of interpretation) {
+                auHtml += `<li>${desc}</li>`;
+            }
+            auHtml += `</ul>`;
+            auHtml += `</div>`;
+        }
+    } else {
+        auHtml += `<p class="no-action-units">No significant action units detected</p>`;
+    }
+    
+    auHtml += `</div>`;
+    return auHtml;
 }

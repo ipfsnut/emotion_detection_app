@@ -502,3 +502,309 @@
         flex-wrap: wrap;
     }
 }
+/* FACS Action Units Styles */
+.action-units-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: rgba(30, 30, 30, 0.5);
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.action-units-section h5 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    color: #00d9ff;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-units-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.au-item {
+    display: flex;
+    align-items: center;
+    background-color: #2a2a2a;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #444;
+    font-size: 0.85rem;
+}
+
+.au-item.high {
+    border-color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+.au-item.medium {
+    border-color: #ffd93d;
+    background-color: rgba(255, 217, 61, 0.1);
+}
+
+.au-item.low {
+    border-color: #6bcf7f;
+    background-color: rgba(107, 207, 127, 0.1);
+}
+
+.au-code {
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    color: #00d9ff;
+    min-width: 40px;
+}
+
+.au-intensity {
+    flex: 1;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin: 0 0.5rem;
+    overflow: hidden;
+}
+
+.au-intensity-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d9ff, #0072ff);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.au-value {
+    font-size: 0.75rem;
+    color: #999;
+    min-width: 35px;
+    text-align: right;
+}
+
+.au-interpretation {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: rgba(0, 217, 255, 0.05);
+    border-left: 3px solid #00d9ff;
+    border-radius: 4px;
+}
+
+.au-interpretation h6 {
+    margin: 0 0 0.5rem 0;
+    color: #00d9ff;
+    font-size: 0.9rem;
+}
+
+.au-list {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #ccc;
+    font-size: 0.85rem;
+}
+
+.au-list li {
+    margin-bottom: 0.25rem;
+}
+
+.no-action-units {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* FACS backend specific card styling */
+.backend-result-card.facs .backend-header,
+.backend-result-card.simplefacs .backend-header {
+    background: linear-gradient(135deg, #00d9ff, #0072ff);
+}
+
+.backend-result-card.facs,
+.backend-result-card.simplefacs {
+    border-color: #00d9ff;
+}
+
+/* Pure FACS Analysis Styles */
+.pure-facs-analysis {
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), rgba(0, 114, 255, 0.05));
+    border: 1px solid #00d9ff;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+.facs-summary {
+    font-size: 1rem;
+    color: #00d9ff;
+    margin-bottom: 1rem;
+    text-align: center;
+    padding: 0.5rem;
+    background-color: rgba(0, 217, 255, 0.1);
+    border-radius: 4px;
+}
+
+.pure-facs-units h5 {
+    color: #00d9ff;
+    margin: 1rem 0 0.75rem 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.facs-unit-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.facs-unit-item {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.facs-unit-item:hover {
+    border-color: #00d9ff;
+    transform: translateY(-2px);
+}
+
+.facs-unit-item.high {
+    border-color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.05);
+}
+
+.facs-unit-item.medium {
+    border-color: #ffd93d;
+    background-color: rgba(255, 217, 61, 0.05);
+}
+
+.facs-unit-item.low {
+    border-color: #6bcf7f;
+    background-color: rgba(107, 207, 127, 0.05);
+}
+
+.facs-unit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.facs-au-code {
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    color: #00d9ff;
+    font-size: 1.1rem;
+}
+
+.facs-intensity {
+    font-weight: bold;
+    color: #fff;
+    background-color: rgba(0, 217, 255, 0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.facs-unit-description {
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.facs-muscle-group {
+    color: #999;
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+.facs-intensity-bar {
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.facs-intensity-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d9ff, #0072ff);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* FACS Combinations */
+.facs-combinations {
+    margin-top: 1rem;
+}
+
+.facs-combinations h5 {
+    color: #00d9ff;
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.facs-combination {
+    background-color: rgba(0, 217, 255, 0.08);
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.facs-combo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.facs-combo-header strong {
+    color: #00d9ff;
+    font-size: 1rem;
+}
+
+.facs-combo-intensity {
+    background-color: rgba(0, 217, 255, 0.2);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.facs-combo-description {
+    color: #ccc;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.facs-combo-aus {
+    color: #999;
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+}
+
+/* Enhanced FACS backend card styling */
+.backend-result-card.facs,
+.backend-result-card.simplefacs {
+    border: 2px solid #00d9ff;
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.02), rgba(0, 114, 255, 0.02));
+}
+
+.backend-result-card.facs .backend-header,
+.backend-result-card.simplefacs .backend-header {
+    background: linear-gradient(135deg, #00d9ff, #0072ff);
+    color: #000;
+    font-weight: bold;
+}

@@ -219,6 +219,14 @@ def get_detector(backend_name):
         'deepface': DeepFaceDetector
     }
     
+    # Add FACS analyzer if available (returns pure muscle data, not emotions)
+    try:
+        from facs_backend import get_facs_analyzer
+        detectors['facs'] = lambda: get_facs_analyzer(use_simple=False)
+        detectors['simplefacs'] = lambda: get_facs_analyzer(use_simple=True)
+    except ImportError:
+        pass
+    
     if backend_name.lower() not in detectors:
         raise ValueError(f"Unknown backend: {backend_name}. Available: {list(detectors.keys())}")
     
@@ -234,5 +242,22 @@ def get_available_backends():
         available.append('deepface')
     except ImportError:
         pass
+    
+    # Check if FACS analyzers are available
+    try:
+        from facs_backend import FACSDetector
+        detector = FACSDetector()
+        detector._get_detector()  # Try to initialize
+        available.append('facs')
+    except:
+        # If full FACS not available, try SimpleFACS
+        try:
+            from facs_backend import SimpleFACSDetector
+            import cv2  # SimpleFACS uses OpenCV
+            detector = SimpleFACSDetector()
+            available.append('simplefacs')
+        except Exception as e:
+            # Removed debug print for production
+            pass
     
     return available
